@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import './App.css';
 
 import LanguageSelector from './components/LanguageSelector';
 import Progress from './components/Progress';
+
+import { ArrowRightLeft, Loader2, Globe } from 'lucide-react';
 
 function App() {
   const worker = useRef(null);
@@ -75,35 +76,74 @@ function App() {
   }
 
   return (
-    <>
-      <h1>Transformers.js</h1>
-      <h2>ML-powered multilingual translation in React!</h2>
+    <div className="min-h-screen bg-[#fdf0d5] py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-4xl font-bold text-center text-[#003049] mb-2 flex items-center justify-center">
+          <Globe className="mr-2" size={36} color="#003049" />
+          Transformers.js
+        </h1>
+        <h2 className="text-xl text-center text-[#c1121f] mb-8">ML-powered multilingual translation in React!</h2>
 
-      <div className='container'>
-        <div className='language-container'>
-          <LanguageSelector type={"Source"} defaultLanguage={"eng_Latn"} onChange={x => setSourceLanguage(x.target.value)} />
-          <LanguageSelector type={"Target"} defaultLanguage={"fra_Latn"} onChange={x => setTargetLanguage(x.target.value)} />
-        </div>
-
-        <div className='textbox-container'>
-          <textarea value={input} rows={3} onChange={e => setInput(e.target.value)}></textarea>
-          <textarea value={output} rows={3} readOnly></textarea>
-        </div>
-      </div>
-
-      <button disabled={disabled} onClick={translate}>Translate</button>
-
-      <div className='progress-bars-container'>
-        {ready === false && (
-          <label>Loading models... (only run once)</label>
-        )}
-        {progressItems.map(data => (
-          <div key={data.file}>
-            <Progress text={data.file} percentage={data.progress} />
+        <div className="bg-white shadow-lg rounded-lg p-6 mb-8 border-2 border-[#003049]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <LanguageSelector
+              type="Source"
+              defaultLanguage="eng_Latn"
+              onChange={(x) => setSourceLanguage(x.target.value)}
+            />
+            <LanguageSelector
+              type="Target"
+              defaultLanguage="fra_Latn"
+              onChange={(x) => setTargetLanguage(x.target.value)}
+            />
           </div>
-        ))}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="w-full p-2 border-2 border-[#003049] rounded-md focus:ring-2 focus:ring-[#c1121f] focus:border-transparent"
+              rows={4}
+              placeholder="Enter text to translate"
+            ></textarea>
+            <textarea
+              value={output}
+              readOnly
+              className="w-full p-2 bg-[#fdf0d5] border-2 border-[#003049] rounded-md"
+              rows={4}
+              placeholder="Translation will appear here"
+            ></textarea>
+          </div>
+
+          <button
+            disabled={disabled}
+            onClick={translate}
+            className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#c1121f] hover:bg-[#003049] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#c1121f] transition-colors duration-200 flex items-center justify-center ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            {disabled ? (
+              <Loader2 className="animate-spin mr-2" size={20} />
+            ) : (
+              <ArrowRightLeft className="mr-2" size={20} />
+            )}
+            Translate
+          </button>
+        </div>
+
+        <div className="bg-white shadow-lg rounded-lg p-6 border-2 border-[#003049]">
+          {ready === false && (
+            <p className="text-center text-[#c1121f] mb-4 flex items-center justify-center">
+              <Loader2 className="animate-spin mr-2" size={20} />
+              Loading models... (only run once)
+            </p>
+          )}
+          {progressItems.map((data) => (
+            <div key={data.file} className="mb-4">
+              <Progress text={data.file} percentage={data.progress} />
+            </div>
+          ))}
+        </div>
       </div>
-    </>
+    </div>
   )
 }
 
